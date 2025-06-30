@@ -1,0 +1,193 @@
+CLASS TEAM
+   CLASS FILELDS:
+      TeamName
+      TeamCode
+      Goals
+      GoalsAgainst
+      Group
+      
+CONSTRUCTOR with PARAMETERS
+   MPORT: pTeamName(String), pTeamCode(String),
+      pGoals (Integer), pGoalsAgainst(Integer),
+      pGroup(String)
+  EXPORT:none //Constructors never export
+  ALGORITHM:
+     TeamName = pTeamName
+     TeamCode = pTeamCode
+     Goals = pGoals
+     GoalsAgainst = pGoalsAgainst
+     Team = pGroup
+     
+//ACCESSORS    
+ACCESSOR: getTeamName
+IMPORT: none
+EXPORT: TeamName(String)
+ASSERTION: Returned the Team Name
+ALGORITHM:
+EXPORT COPY OF TeamName
+Alternate ALGORITHM:
+ RETURN COPY OF TeamName
+ 
+ ACCESSOR: getTeamCode
+IMPORT: none
+EXPORT: TeamCode(String)
+ASSERTION: Returned the Team code
+ALGORITHM:
+EXPORT COPY OF Teamcode
+Alternate ALGORITHM:
+ RETURN COPY OF Teamcode
+ 
+ACCESSOR: getGoals
+IMPORT: none
+EXPORT: Goals(INTEGER)
+ASSERTION: Returned the Goals
+ALGORITHM:
+EXPORT COPY OF Goals
+Alternate ALGORITHM:
+ RETURN COPY OF Goals
+ 
+ ACCESSOR: getGoalsAgainst
+IMPORT: none
+EXPORT: GoalsAgainst(INTEGER)
+ASSERTION: Returned the Goals Against
+ALGORITHM:
+EXPORT COPY OF GoalsAgainst
+Alternate ALGORITHM:
+ RETURN COPY OFGoalsAgainst
+ 
+ ACCESSOR: getGroup
+IMPORT: none
+EXPORT: Group(String)
+ASSERTION: Returned the Team Name
+ALGORITHM:
+EXPORT COPY OF Group
+Alternate ALGORITHM:
+ RETURN COPY OF Group
+ 
+ ACCESSOR: calculatenetgoals
+IMPORT: none
+EXPORT: Goals(Integer),GoalsAgainst(Integer)
+ASSERTION: Returned the Goals-GoalsAgainst
+ALGORITHM:
+EXPORT COPY OF Goals-GoalsAgainst
+Alternate ALGORITHM:
+ RETURN COPY OF Goals-GoalsAgainst
+ 
+   MAIN:
+   DO{
+     OUTPUT:"Welcome to the FIFA WWC Analysis Program"
+     OUTPUT:"Enter the name of the file containing the data:"
+     GET filename
+     Team[] teams = readDataFromFile
+     OUTPUT:"An overall analysis or a Group analysis? (Enter 'A' for overall or 'G' for group):"
+     char analysisChoice = GET analysisChoice
+            if (analysisChoice == 'A') {
+               performOverallAnalysis(teams);
+            }else if (analysisChoice == 'G') {
+            OUTPUT:"Enter the group (A, B, C, or D) for group analysis:"
+            String groupChoice = GET groupChoice
+            performGroupAnalysis(teams, groupChoice);
+            }
+            OUTPUT: "Would you like to exit?"
+            String decition = GET decition
+            if(decition == "yes"){
+            	break;
+            }
+     }while(true);
+     ENDMAIN
+     
+     METHOD : readDataFromFile()
+     IMPORT : fileName(String)
+     EXPORT : Arrays.copyOf Teams and Index
+     ALGORITHM : 
+        Team[] teams = new Team[100]
+          int index = 0
+          (BufferedReader br = new BufferedReader(new FileReader(fileName))) 
+           String line
+           br.readLine()
+             while ((line = br.readLine()) != null) {
+               String[] data = line.split(",");
+               if (datalength == 5) {
+                  String TeamName = data[0];
+                  String TeamCode = data[1];
+                  int Goals = Integer.parseInt(data[2]);
+                  int GoalsAgainst = Integer.parseInt(data[3]);
+                  String Team = data[4];
+                  teams[index] = new Team(TeamName, TeamCode, Goals, GoalsAgainst, Team);
+                  index++;
+               }
+            }
+    ENDMETHOD
+    
+    METHOD : performOverallAnalysis()
+    IMPORT: Team[] teams
+    EXPORT: none
+    ALGORITHM:
+     SORT ARRAY GOALS AGAINST THE TEAM IN DESCENDING ORDER
+     OUTPUT :"Teams Sorted by Total Goals Scored Against Them:"
+     for (Team team : teams) {
+        int goalsAgainst = team.getGoalsAgainst()
+        OUTPUT: team.getTeamName() + ": Goals Against = " + goalsAgainst);
+       }
+       
+     SORT ARRAY TOTAL GOALS OF THE TEAM IN DESCENDING ORDER
+     OUTPUT :"Teams Sorted by Total Goals Scored:"
+     for (Team team : teams) {
+        int goals = team.getGoals()
+        OUTPUT: team.getTeamName() + ": Goals = " + goals);
+       }
+       
+     SORT ARRAY DESCENDING ORDER ACCORDING TO NETGOALS
+     OUTPUT :"Teams Sorted by NetGoals:"
+     for (Team team : teams) {
+        int netgoals = team.CalculateNetGoals()
+        OUTPUT: team.getTeamName() + ": Net Goals = " + netGoals
+       }
+       Team bestTeam = teams[0];
+       int bestNetGoals = bestTeam.calculateNetGoals();
+       for (Team team : teams) {
+        int netGoals = team.calculateNetGoals();
+        if (netGoals > bestNetGoals) {
+            bestTeam = team;
+            bestNetGoals = netGoals;
+        }
+       }
+        OUTPUT: "Best Performing Team: " + bestTeam.getTeamName()
+    END METHOD
+    
+    METHOD: performGroupAnalysis()
+    IMPORT: Team[] teams, String selectedGroup
+    EXPORT: none
+    ALGORITHM:
+     OUTPUT: "Group Analysis for Group " + selectedGroup + ":"
+     int totalGoalsForGroup = 0
+     int totalGoalsAgainstGroup = 0
+     Team bestTeam = null;
+     int bestNetGoals = Integer.MIN_VALUE;
+     SORT THE ARRAY ACCORDING TO NETGOALS
+     for (Team team : teams) {
+        if (team.getTeam()== selectedGroup) {
+            OUTPUT: "Team Name: " + team.getTeamName()
+            OUTPUT: "Team Code: " + team.getTeamCode()
+            OUTPUT: "Goals Scored: " + team.getGoals()
+           OUTPUT: "Goals Scored Against: " + team.getGoalsAgainst()
+            
+            int netGoals = team.calculateNetGoals()
+            OUTPUT: "Net Goals: " + netGoals
+            totalGoalsForGroup += team.getGoals()
+            totalGoalsAgainstGroup += team.getGoalsAgainst()
+            
+            if (netGoals > bestNetGoals) {
+                bestNetGoals = netGoals
+                bestTeam = team
+            }
+        }
+    }
+    OUTPUT : "Total Goals Scored for Group " + selectedGroup + ": " + totalGoalsForGroup
+    OUTPUT : "Total Goals Scored Against Group " + selectedGroup + ": " + totalGoalsAgainstGroup
+    if (bestTeam != null) {
+        System.out.println("Best Performing Team in Group " + selectedGroup + ": " + bestTeam.getTeamName());
+    } else {
+        System.out.println("No teams found in Group " + selectedGroup);
+    }
+    END METHOD

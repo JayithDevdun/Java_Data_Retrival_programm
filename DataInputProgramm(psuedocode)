@@ -1,0 +1,122 @@
+BEGIN 
+  MAIN :
+    OUTPUT :"Welcome to the FIFA WWC Data Entry Program"
+    writeHeaders();
+    DO{
+    	  OUTPUT :"How many teams’ data are you planning to enter?"
+    	  GET numTeams
+    	   OUTPUT :"Enter the Data"
+    	   for(int i=0; i < numTeams; i++){
+    	      String filename = "data01.csv";
+    	      OUTPUT : TeamName
+    	      GET TeamName
+    	   WHILE(TeamName = NULL){
+    	        OUTPUT :"Team Name."
+    	   	OUTPUT :"Team Name cannot be empty. Please enter a valid Team Name."
+    	   	Get TeamName
+    	    }
+    	    OUTPUT : TeamCode
+    	    GET TeamCode
+    	    WHILE(TeamCode = NULL){
+    	        
+    	        OUTPUT :"Team Code."
+    	   	OUTPUT :"Team Name cannot be empty. Please enter a valid Team Name."
+    	   	Get TeamCode
+    	    }
+    	    OUTPUT : "Goals Scored by the Team:"
+    	    GET Goals
+    	    WHILE(Goals < 0){
+    	        
+    	        OUTPUT :"Goals Scored by the Team:"
+    	   	OUTPUT :"Goals Scored cannot be negative. Please enter a non-negative integer."
+    	   	GET Goals
+    	    }
+    	    OUTPUT : "Goals Scored Against the Team:"
+    	    GET GoalsAgainst
+    	    WHILE(Goals < 0){
+    	        
+    	        OUTPUT :"Goals"
+    	   	OUTPUT :"Goals Scored cannot be negative. Please enter a non-negative integer."
+    	   	GET Goals
+    	    }
+    	    OUTPUT : "Group"
+    	    GET Group
+    	    WHILE(Group != A OR B OR C OR D){
+    	        
+    	        OUTPUT :"Goals"
+    	   	OUTPUT :"Goals Scored cannot be negative. Please enter a non-negative integer."
+    	   	GET Goals
+    	     }
+    	     writeOneRow(filename,TeamName,TeamCode,TeamGoals,GoalsAgainst,Group );
+    	   }
+    	   OUTPUT:"Would you like to enter more data (Y or N)?"
+    	   GET desition
+    	   if(desition != "Y"){
+    	   break;
+    	   }
+    	 }while(true)
+    	 
+    	  OUTPUT :"Current data look like this"
+    	   readfile("data01.csv")
+    	  OUTPUT : ""What would you like to name your csv file"
+    	  Get filename
+    	  OUTPUT : ""Thank you and have a great day."
+    END MAIN
+    
+    METHOD: writeHeaders
+    IMPORT: none
+    EXPORT: headers 
+    ALGORITHM:
+     String filename = "data01.csv"
+       FileOutputStream fileStrm = null
+       PrintWriter pw
+       fileStrm = new FileOutputStream(filename,false)
+       pw = new PrintWriter(fileStrm)	 	
+       pw println("Team Name,Team Code,Goals For,Goals Against,Group")
+       pw close()
+    END METHOD
+    
+    METHOD: writeOneRow
+    IMPORT: FileName,TeamName,teamcode,Goals for,Goals Against,Team
+    EXPORT: Write each input data in csv file
+    ALGORITHM:
+       	FileOutputStream fileStrm = null
+        PrintWriter pw
+        fileStrm = new FileOutputStream(pFilename,true)
+            pw = new PrintWriter(fileStrm)	 	
+            pw println(pTeamName + "," + pTeamCode + "," + pTeamGoals + "," + pGoalsAgainst+ "," +pGroup)
+            pw close()	
+    END METHOD
+    
+    METHOD: readfile
+    IMPORT: FileName
+    EXPORT: csv file values
+    ALGORITHM:
+     FileInputStream fileStream =null
+          InputStreamReader rdr
+          BufferedReader buffRdr
+          int lineNum
+          String line
+     fileStream = new FileInputStream(pFileName)
+          rdr        = new InputStreamReader(fileStream )
+          buffRdr     = new BufferedReader(rdr)
+          lineNum    = 0
+          line       = buffRdr readLine()
+          while(line != null){
+              lineNum++
+              OUTPUT: line
+              line       = buffRdr readLine()
+          }
+               fileStream.close();     
+    END METHOD
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
